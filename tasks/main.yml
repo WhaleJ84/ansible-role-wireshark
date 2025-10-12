@@ -39,3 +39,10 @@
         name: "{{ ansible_user_id }}"
         groups: wireshark
         append: true
+
+    - name: INSTALL | Ensure dumpcap has correct capabilities
+      become: true
+      community.general.capabilities:
+        path: /usr/bin/dumpcap
+        capability: cap_net_raw,cap_net_admin=ep
+        state: present
