@@ -42,6 +42,7 @@
 
     - name: INSTALL | Ensure dumpcap has correct capabilities
       become: true
+      changed_when: false
       community.general.capabilities:
         path: /usr/bin/dumpcap
         capability: cap_net_raw,cap_net_admin=ep
