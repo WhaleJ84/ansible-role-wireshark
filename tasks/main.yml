@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: MIT-0
+---
+# tasks file for whalej84.wireshark
+- name: INSTALL | wireshark
+  tags:
+    - install
+  block:
+    - name: INSTALL | Install wireshark apt repostory
+      become: true
+      ansible.builtin.deb822_repository:
+        name: docker
+        types: deb
+        uris: http://ppa.launchpadcontent.net/wireshark-dev/stable/ubuntu
+        suites: "{{ ansible_distribution_release }}"
+        components:
+          - main
+        signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xa2e402b85a4b70cd78d8a3d9d875551314eca0f0
+        architectures:
+          - "{{ 'amd64' if ansible_architecture == 'x86_64' else null }}"
+      when: ansible_facts['distribution'] == "Ubuntu"
+      register: keychain
+
+    - name: INSTALL | Install wireshark from apt repository
+      become: true
+      ansible.builtin.apt:
+        name: wireshark
+        state: present
+        update_cache: "{{ true if keychain.changed else false }}"
+
+    - name: INSTALL | Ensure wireshark group exists
+      become: true
+      ansible.builtin.group:
+        name: wireshark
+        state: present
+
+    - name: INSTALL | Ensure user is in wireshark group
+      become: true
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        groups: wireshark
+        append: true
