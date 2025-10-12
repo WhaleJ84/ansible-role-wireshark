@@ -8,7 +8,7 @@
     - name: INSTALL | Install wireshark apt repostory
       become: true
       ansible.builtin.deb822_repository:
-        name: docker
+        name: wireshark
         types: deb
         uris: http://ppa.launchpadcontent.net/wireshark-dev/stable/ubuntu
         suites: "{{ ansible_distribution_release }}"
